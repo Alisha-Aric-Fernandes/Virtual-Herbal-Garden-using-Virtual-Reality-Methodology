@@ -299,31 +299,7 @@ const BookmarkPage = () => {
     setLoading(false); // Mark loading as complete
   }, [auth?.user, navigate, setBookmark]);
 
-  // Add a bookmark item and prevent duplicates
-  // const addBookmarkItem = (plant) => {
-  //   if (!auth?.user) {
-  //     toast.error("You must be logged in to bookmark items!");
-  //     return;
-  //   }
-
-  //   // Retrieve the latest bookmarks from state
-  //   setBookmark((prevBookmarks) => {
-  //     // Check if the plant is already bookmarked
-  //     const isAlreadyBookmarked = prevBookmarks.some((item) => item._id === plant._id);
-
-  //     if (isAlreadyBookmarked) {
-  //       toast.error("This plant is already bookmarked!");
-  //       return prevBookmarks; // Return previous bookmarks without changes
-  //     }
-
-  //     // Add new plant to bookmarks
-  //     const updatedBookmarks = [...prevBookmarks, plant];
-  //     localStorage.setItem(`bookmark_${auth.user._id}`, JSON.stringify(updatedBookmarks));
-
-  //     toast.success("Plant bookmarked successfully!");
-  //     return updatedBookmarks; // Update state
-  //   });
-  // };
+  
 
   // Remove a bookmark item
   const removeBookmarkItem = (pid) => {

@@ -12,7 +12,7 @@ const CategoryPlant = () => {
   const navigate = useNavigate();
   const [plants, setPlants] = useState([]);
   const [category, setCategory] = useState([]);
-  const [setBookmark]=useBookmark();
+  const [bookmark,setBookmark]=useBookmark();
     const [auth]=useAuth()
   useEffect(() => {
     if (params?.slug) getPlantsByCat();

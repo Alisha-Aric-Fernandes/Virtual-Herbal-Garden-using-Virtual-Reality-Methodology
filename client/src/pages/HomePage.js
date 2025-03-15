@@ -13,7 +13,7 @@ const HomePage = () => {
   const navigate =useNavigate();
   const [plants, setPlants] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [setBookmark]=useBookmark();
+  const [bookmark,setBookmark]=useBookmark();
     const [auth]=useAuth()
   const [error, setError] = useState(null);
   const [checked, setChecked] = useState([]);

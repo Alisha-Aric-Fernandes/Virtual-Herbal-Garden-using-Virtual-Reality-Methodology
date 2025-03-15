@@ -14,7 +14,7 @@ const PlantDetails = () => {
   const navigate = useNavigate();
   const [plant, setPlant] = useState({});
   const [relatedPlants, setRelatedPlants] = useState([]);
-  const [setBookmark]=useBookmark();
+  const [bookmark,setBookmark]=useBookmark();
    const [auth]=useAuth()
 
   //initalp details
