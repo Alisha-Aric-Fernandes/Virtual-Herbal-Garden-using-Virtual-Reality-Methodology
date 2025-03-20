@@ -67,7 +67,7 @@ const handleSubmit=async(e)=>{
   </div>
   <div className="mb-3">
    
-    <input type="text"  value={answer} onChange={(e)=>setAnswer( e.target.value)} className="form-control" id="exampleInputAddress"  placeholder='What is your favorite sports' required/>
+    <input type="text"  value={answer} onChange={(e)=>setAnswer( e.target.value)} className="form-control" id="exampleInputAddress"  placeholder='What is your favorite plant?' required/>
     
   </div>
   
