@@ -4,14 +4,16 @@ import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import "../../styles/AuthStyles.css";
-
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 const Register = () => {
   const [name,setName]=useState("");
   const [email,setemail]=useState("");
-  const [password,setpassword]=useState("");
+  const [password,setPassword]=useState("");
   const [phone,setphone]=useState("");
   const [address,setaddress]=useState("");
   const [answer,setAnswer]=useState("");
+
+  const [showPassword, setShowPassword] = useState(false);
   const navigate=useNavigate();
  
 
@@ -51,10 +53,57 @@ const handleSubmit=async(e)=>{
     <input type="Email"  value={email} onChange={(e)=>setemail( e.target.value)} className="form-control" id="exampleInputEmail"  placeholder='enter your email' required/>
     
   </div>
-  <div className="mb-3">
-    
-    <input type="password"  value={password} onChange={(e)=>setpassword( e.target.value)}  className="form-control" id="exampleInputPassword"  placeholder='enter your password' required/>
-  </div>
+  {/* <div className="mb-3" style={{ display: "flex", alignItems: "center", padding: "5px" }}>
+            <input
+              type={showPassword ? "text" : "password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="form-control"
+              placeholder="Enter your password"
+              style={{ flex: 1, border: "none", outline: "none" }}
+              required
+            />
+            <span
+              onClick={() => setShowPassword(!showPassword)}
+              style={{ cursor: "pointer", padding: "5px" }}
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </span>
+          </div> 
+ */}
+
+
+<div className="mb-3" style={{ position: "relative" }}>
+  <input
+    type={showPassword ? "text" : "password"}
+    value={password}
+    onChange={(e) => setPassword(e.target.value)}
+    className="form-control"
+    placeholder="Enter your password"
+    style={{
+      width: "100%",
+      border: "none",
+      borderBottom: "1px solid #000",
+      outline: "none",
+      padding: "8px",
+      background: "transparent",
+    }}
+    required
+  />
+  <span
+    onClick={() => setShowPassword(!showPassword)}
+    style={{
+      position: "absolute",
+      right: "10px",
+      top: "50%",
+      transform: "translateY(-50%)",
+      cursor: "pointer",
+    }}
+  >
+    {showPassword ? <FaEyeSlash /> : <FaEye />}
+  </span>
+</div>
+
   <div className="mb-3">
    
     <input type="text"  maxLength="10" value={phone} onChange={(e)=>setphone( e.target.value)} className="form-control" id="exampleInputphone"  placeholder='enter your Phone' required />

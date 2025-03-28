@@ -5,11 +5,12 @@ import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import "../../styles/AuthStyles.css";
 import { useAuth } from '../../context/auth';
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 const Login = () => {
     const [email,setemail]=useState("");
-    const [password,setpassword]=useState("");
+    const [password,setPassword]=useState("");
     const [auth,setAuth]=useAuth()
-   
+   const [showPassword, setShowPassword] = useState(false);
  const navigate=useNavigate()
 //  const location=useLocation();
     const handleSubmit=async(e)=>{
@@ -52,10 +53,43 @@ const Login = () => {
     <input type="Email"  value={email} onChange={(e)=>setemail( e.target.value)} className="form-control" id="exampleInputEmail"  placeholder='enter your email' required/>
     
   </div>
-  <div className="mb-3">
+  {/* <div className="mb-3">
     
     <input type="password"  value={password} onChange={(e)=>setpassword( e.target.value)}  className="form-control" id="exampleInputPassword1"  placeholder='enter your password' required/>
+  </div> */}
+
+  
+  <div className="mb-3" style={{ position: "relative" }}>
+    <input
+      type={showPassword ? "text" : "password"}
+      value={password}
+      onChange={(e) => setPassword(e.target.value)}
+      className="form-control"
+      placeholder="Enter your password"
+      style={{
+        width: "100%",
+        border: "none",
+        borderBottom: "1px solid #000",
+        outline: "none",
+        padding: "8px",
+        background: "transparent",
+      }}
+      required
+    />
+    <span
+      onClick={() => setShowPassword(!showPassword)}
+      style={{
+        position: "absolute",
+        right: "10px",
+        top: "50%",
+        transform: "translateY(-50%)",
+        cursor: "pointer",
+      }}
+    >
+      {showPassword ? <FaEyeSlash /> : <FaEye />}
+    </span>
   </div>
+  
   
   <div className="mb-3">
   <button type="button" className="btn btn-primary" onClick={()=>{navigate('/forgot-password')}}>Forgot Password</button>
