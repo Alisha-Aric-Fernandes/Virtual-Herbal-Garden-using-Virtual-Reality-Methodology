@@ -57,7 +57,7 @@ const handleSubmit=async(e)=>{
   </div>
   <div className="mb-3">
    
-    <input type="text"  value={phone} onChange={(e)=>setphone( e.target.value)} className="form-control" id="exampleInputphone"  placeholder='enter your Phone' required />
+    <input type="text"  maxLength="10" value={phone} onChange={(e)=>setphone( e.target.value)} className="form-control" id="exampleInputphone"  placeholder='enter your Phone' required />
     
   </div>
   <div className="mb-3">

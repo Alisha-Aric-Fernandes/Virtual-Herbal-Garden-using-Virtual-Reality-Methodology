@@ -28,8 +28,11 @@ const UpdatePlant = () => {
   const [threeDModel, setThreeDModel] = useState(null);
   const [modelUrl, setModelUrl] = useState(null);
   const [category, setCategory] = useState("");
-  const[id,setId]=useState("")
-
+  const[id,setId]=useState("");
+   const [rootImage, setRootImage] = useState(null);
+    const [leafImage, setLeafImage] = useState(null);
+    const [stemImage, setStemImage] = useState(null);
+    const [fruitImage, setFruitImage] = useState(null);
 
   const getSinglePlant = async () => {
     try {
@@ -54,8 +57,10 @@ const UpdatePlant = () => {
        // Set the existing model URL if available
     
       setModelUrl(data.plant.threeDModel?.url || null);
-  
-
+      setRootImage(data.plant.rootImage?.url || null);
+      setLeafImage(data.plant.leafImage?.url|| null);
+      setStemImage(data.plant.stemImage?.url|| null);
+      setFruitImage(data.plant.fruitImage?.url|| null);
 
       } catch (error) {
       console.log(error);
@@ -83,6 +88,32 @@ const UpdatePlant = () => {
     getAllCategory();
   }, []);
 
+  // const handleImageChange = (event, setImage) => {
+  //   const file = event.target.files[0];
+  //   if (file) {
+  //     setImage(file);
+  //   }
+  // };
+  const handleImageChange = (event, setImage) => {
+    const file = event.target.files[0];
+    if (file) {
+      if (file instanceof Blob) {
+        setImage(file);
+      } else {
+        console.error("Invalid file type for image upload");
+      }
+    }
+  };
+  
+  useEffect(() => {
+    console.log("Root Image:", rootImage);
+    console.log("Leaf Image:", leafImage);
+    console.log("Stem Image:", stemImage);
+    console.log("fruit Image:", fruitImage);
+  }, [rootImage, leafImage, stemImage,fruitImage]);
+  
+  
+
   // CREATE PLANT
   const handleUpdate = async (e) => {
     e.preventDefault();
@@ -107,6 +138,11 @@ const UpdatePlant = () => {
         productData.append("existingModelUrl", modelUrl); // Send existing model URL
       }
 
+
+      if (rootImage) productData.append("rootImage", rootImage);
+      if (leafImage) productData.append("leafImage", leafImage);
+      if (stemImage) productData.append("stemImage", stemImage);
+      if (fruitImage) productData.append("fruitImage", fruitImage);
       console.log("Category ID:", category);
 
 
@@ -138,24 +174,51 @@ const UpdatePlant = () => {
   };
 
   // Handle file upload and create a preview URL
+  // const handleFileChange = (event) => {
+  //   const file = event.target.files[0];
+  //   if (!file) return;
+
+  //   // Check if the file is a supported 3D model format
+  //   const allowedExtensions = [".glb", ".gltf"];
+  //   const fileExtension = file.name.slice(file.name.lastIndexOf(".")).toLowerCase();
+
+  //   if (!allowedExtensions.includes(fileExtension)) {
+  //     toast.error("Invalid file type. Please upload a .glb or .gltf file.");
+  //     return;
+  //   }
+
+  //   const fileUrl = URL.createObjectURL(file);
+  //   setThreeDModel(file);
+  //   setModelUrl(fileUrl); // Store Blob URL for preview
+  // };
+
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (!file) return;
-
-    // Check if the file is a supported 3D model format
+  
+    // Check if the file is a valid type (gltf or glb)
     const allowedExtensions = [".glb", ".gltf"];
     const fileExtension = file.name.slice(file.name.lastIndexOf(".")).toLowerCase();
-
+  
     if (!allowedExtensions.includes(fileExtension)) {
       toast.error("Invalid file type. Please upload a .glb or .gltf file.");
       return;
     }
-
-    const fileUrl = URL.createObjectURL(file);
-    setThreeDModel(file);
-    setModelUrl(fileUrl); // Store Blob URL for preview
+  
+    try {
+      // Ensure that the file is of type Blob before creating an object URL
+      if (file instanceof Blob) {
+        const fileUrl = URL.createObjectURL(file);
+        setThreeDModel(file);
+        setModelUrl(fileUrl); // Store Blob URL for preview
+      } else {
+        console.error("Invalid file type for creating an Object URL");
+      }
+    } catch (error) {
+      console.error("Error creating Object URL:", error);
+    }
   };
-
+  
   const handleDelete = async () => {
     try {
       let answer = window.prompt("Are You Sure want to delete this product ? ");
@@ -163,7 +226,7 @@ const UpdatePlant = () => {
       const { data } = await axios.delete(
         `${process.env.REACT_APP_API}/api/v1/plant/delete-plant/${id}`
       );
-      toast.success("Product Deleted Successfully");
+      toast.success("Plant Deleted Successfully");
       navigate("/dashboard/admin/plants");
     } catch (error) {
       console.log(error);
@@ -237,6 +300,66 @@ const UpdatePlant = () => {
                 )}
               </div>
 
+              <div className="mb-3">
+  <label className="btn btn-outline-secondary col-md-12">
+    Upload Root Image
+    <input type="file" accept="image/*" hidden onChange={(e) => handleImageChange(e, setRootImage)} />
+  </label>
+  {rootImage && (
+  <img 
+    src={typeof rootImage === 'string' ? rootImage : URL.createObjectURL(rootImage)} 
+    alt="Root" 
+    className="img-fluid mt-2" 
+    style={{ maxHeight: "200px" }} 
+  />
+)}
+</div>
+
+<div className="mb-3">
+  <label className="btn btn-outline-secondary col-md-12">
+    Upload Leaf Image
+    <input type="file" accept="image/*" hidden onChange={(e) => handleImageChange(e, setLeafImage)} />
+  </label>
+  {leafImage && (
+  <img 
+    src={typeof leafImage === 'string' ? leafImage : URL.createObjectURL(leafImage)} 
+    alt="Leaf" 
+    className="img-fluid mt-2" 
+    style={{ maxHeight: "200px" }} 
+  />
+)}
+</div>
+
+<div className="mb-3">
+  <label className="btn btn-outline-secondary col-md-12">
+    Upload Stem Image
+    <input type="file" accept="image/*" hidden onChange={(e) => handleImageChange(e, setStemImage)} />
+  </label>
+  {stemImage && (
+  <img 
+    src={typeof stemImage === 'string' ? stemImage : URL.createObjectURL(stemImage)} 
+    alt="Stem" 
+    className="img-fluid mt-2" 
+    style={{ maxHeight: "200px" }} 
+  />
+)}
+</div>
+<div className="mb-3">
+  <label className="btn btn-outline-secondary col-md-12">
+    Upload Fruit Image
+    <input type="file" accept="image/*" hidden onChange={(e) => handleImageChange(e, setFruitImage)} />
+  </label>
+  {fruitImage && (
+  <img 
+    src={typeof fruitImage === 'string' ? fruitImage : URL.createObjectURL(fruitImage)} 
+    alt="Fruit" 
+    className="img-fluid mt-2" 
+    style={{ maxHeight: "200px" }} 
+  />
+)}
+</div>
+
+
               {/* Input Fields */}
               {[
                 { value: name, setter: setName, placeholder: "Write the name of the model" },
@@ -282,24 +405,7 @@ const UpdatePlant = () => {
   );
 };
 
-// Component to Load and Display 3D Model
-// const Model = ({ modelUrl }) => {
 
-//   if (!modelUrl || typeof modelUrl !== "string") {
-//     return null; // Prevent rendering if URL is invalid
-//   }
-//   const { scene } = useGLTF(modelUrl);
-//   return <primitive object={scene} scale={1.5} position={[0, -1, 0]} />;
-// };
-
-// const Model = ({ modelUrl }) => {
-//   try {
-//     const { scene } = useGLTF(modelUrl);
-//     return <primitive object={scene} scale={1.5} position={[0, -1, 0]} />;
-//   } catch (error) {
-//     console.error("Error loading model:", error);
-//     return null; // Prevent rendering if loading fails
-//   }
 // };
 
 const Model = ({ modelUrl }) => {
@@ -311,3 +417,4 @@ const Model = ({ modelUrl }) => {
 
 
 export default UpdatePlant;
+

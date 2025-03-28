@@ -4,6 +4,7 @@ import Footer from './Footer';
 import {Helmet} from "react-helmet";
 import { Toaster } from 'react-hot-toast';
 
+
 import 'react-toastify/dist/ReactToastify.css';
 const Layout = ({children,title,description,keywords,author}) => {
   return (
@@ -25,6 +26,7 @@ const Layout = ({children,title,description,keywords,author}) => {
      <Toaster />
       {children}
       </main>
+     
       <Footer/>
     </div>
   );

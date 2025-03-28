@@ -17,6 +17,106 @@ cloudinary.v2.config({
 
 
 
+// export const createPlantController = async (req, res) => {
+//   try {
+//     const {
+//       name,
+//       botanicalName,
+//       physicalDescription,
+//       habitat,
+//       medicinalUses,
+//       cultivationMethods,
+//       chemicalComposition,
+//       pharmacologicalEffects,
+//       clinicalStudies,
+//       safetyPrecautions,
+//       sources,
+//       category,
+//     } = req.fields;
+//     const { threeDModel } = req.files;
+   
+
+//     // ✅ Required field validation
+//     if (
+//       !name ||
+//       !botanicalName ||
+//       !physicalDescription ||
+//       !habitat ||
+//       !medicinalUses ||
+//       !cultivationMethods ||
+//       !chemicalComposition ||
+//       !pharmacologicalEffects ||
+//       !clinicalStudies ||
+//       !safetyPrecautions ||
+//       !sources ||
+//       !category
+//     ) {
+//       return res.status(400).send({ error: "All fields are required" });
+//     }
+
+//     // ✅ Check if Category Exists
+//     const categoryExists = await CategoryModel.findById(category);
+//     if (!categoryExists) {
+//       return res.status(400).send({ error: "Invalid Category ID" });
+//     }
+
+//     // ✅ Create New Plant
+//     const plant = new PlantModel({
+//       ...req.fields,
+//       slug: slugify(name),
+//     });
+
+//     // ✅ Upload 3D Model to Cloudinary
+//     if (threeDModel) {
+//       const result = await cloudinary.v2.uploader.upload(threeDModel.path, {
+        
+//         resource_type: "raw",
+//         folder: "herbal-garden",
+//         timeout: 60000, // 60 seconds timeout
+//       });
+
+      
+
+//       console.log("Cloudinary Upload Result:", result);
+//       // ✅ Store Cloudinary URL
+//       plant.threeDModel = {
+//         url: result.secure_url,
+//         public_id: result.public_id,
+//       };
+
+//       fs.unlinkSync(threeDModel.path);
+//     }
+    
+
+      
+//     // ✅ Save Plant
+//     const savedPlant = await plant.save();
+
+//       // ✅ Remove temp file after upload
+ 
+
+//     // ✅ Add Plant to Category
+//     await CategoryModel.findByIdAndUpdate(
+//       category,
+//       { $push: { plants: savedPlant._id } }, // ✅ Add plant reference
+//       { new: true }
+//     );
+
+//     res.status(201).send({
+//       success: true,
+//       message: "Plant Created Successfully and added to Category",
+//       plant: savedPlant,
+//     });
+//   } catch (error) {
+//     console.error("Error in creating Plant:", error);
+//     res.status(500).send({
+//       success: false,
+//       error: error.message,
+//       message: "Error in creating Plant",
+//     });
+//   }
+// };
+
 
 export const createPlantController = async (req, res) => {
   try {
@@ -34,7 +134,8 @@ export const createPlantController = async (req, res) => {
       sources,
       category,
     } = req.fields;
-    const { threeDModel } = req.files;
+    
+    const { threeDModel, rootImage, leafImage, stemImage ,fruitImage} = req.files;
 
     // ✅ Required field validation
     if (
@@ -60,7 +161,7 @@ export const createPlantController = async (req, res) => {
       return res.status(400).send({ error: "Invalid Category ID" });
     }
 
-    // ✅ Create New Plant
+    // ✅ Create New Plant Object
     const plant = new PlantModel({
       ...req.fields,
       slug: slugify(name),
@@ -69,14 +170,10 @@ export const createPlantController = async (req, res) => {
     // ✅ Upload 3D Model to Cloudinary
     if (threeDModel) {
       const result = await cloudinary.v2.uploader.upload(threeDModel.path, {
-        
         resource_type: "raw",
-        folder: "herbal-garden",
-        timeout: 60000, // 60 seconds timeout
+        folder: "herbal-garden/models",
       });
 
-      console.log("Cloudinary Upload Result:", result);
-      // ✅ Store Cloudinary URL
       plant.threeDModel = {
         url: result.secure_url,
         public_id: result.public_id,
@@ -85,22 +182,33 @@ export const createPlantController = async (req, res) => {
       fs.unlinkSync(threeDModel.path);
     }
 
+    // ✅ Upload Additional Images to Cloudinary
+    const uploadImage = async (image, folder) => {
+      if (!image) return null;
+      const result = await cloudinary.v2.uploader.upload(image.path, {
+        folder: `herbal-garden/${folder}`,
+      });
+      fs.unlinkSync(image.path);
+      return { url: result.secure_url, public_id: result.public_id };
+    };
+
+    plant.rootImage = await uploadImage(rootImage, "roots");
+    plant.leafImage = await uploadImage(leafImage, "leaves");
+    plant.stemImage = await uploadImage(stemImage, "stems");
+    plant.fruitImage = await uploadImage(fruitImage, "fruits");
     // ✅ Save Plant
     const savedPlant = await plant.save();
-
-      // ✅ Remove temp file after upload
- 
 
     // ✅ Add Plant to Category
     await CategoryModel.findByIdAndUpdate(
       category,
-      { $push: { plants: savedPlant._id } }, // ✅ Add plant reference
+      { $push: { plants: savedPlant._id } },
       { new: true }
     );
 
     res.status(201).send({
       success: true,
-      message: "Plant Created Successfully and added to Category",
+      message: "Plant Created Successfully",
       plant: savedPlant,
     });
   } catch (error) {
@@ -113,31 +221,8 @@ export const createPlantController = async (req, res) => {
   }
 };
 
-// ✅ Fetch All Plants with Category
-// export const getPlantController = async (req, res) => {
-//   try {
-//     const plants = await PlantModel
-//       .find({})
-//       .populate("category") // ✅ Populate category details
-//       .select("+threeDModel")
-//       .limit(12)
-//       .sort({ createdAt: -1 });
 
-//     res.status(200).send({
-//       success: true,
-//       countTotal: plants.length,
-//       message: "All Plants Fetched",
-//       plants,
-//     });
-//   } catch (error) {
-//     console.error("Error in fetching plants:", error);
-//     res.status(500).send({
-//       success: false,
-//       message: "Error in getting plants",
-//       error: error.message,
-//     });
-//   }
-// };
+
 export const getPlantController = async (req, res) => {
   try {
     const plants = await PlantModel
@@ -164,41 +249,12 @@ export const getPlantController = async (req, res) => {
 };
 
 
-// // ✅ Fetch Single Plant with Category
-// export const getSinglePlantController = async (req, res) => {
-//   try {
-//     const plant = await PlantModel
-//       .findOne({ slug: req.params.slug })
-//       .select("+threeDModel")
-//       .populate("category"); // ✅ Populate category
-
-//     if (!plant) {
-//       return res.status(404).send({
-//         success: false,
-//         message: "Plant not found",
-//       });
-//     }
-
-//     res.status(200).send({
-//       success: true,
-//       message: "Single Plant Fetched",
-//       plant,
-//     });
-//   } catch (error) {
-//     console.error("Error fetching single plant:", error);
-//     res.status(500).send({
-//       success: false,
-//       message: "Error while getting single plant",
-//       error: error.message,
-//     });
-//   }
-// };
 export const getSinglePlantController = async (req, res) => {
   try {
     const plant = await PlantModel
       .findOne({ slug: req.params.slug })
       .populate("category")
-      .select("+threeDModel"); // ✅ Fetch threeDModel only for a single plant
+      .select("+threeDModel  +rootImage +leafImage +stemImage +fruitImage"); // ✅ Fetch threeDModel only for a single plant
 
     if (!plant) {
       return res.status(404).send({
@@ -222,67 +278,6 @@ export const getSinglePlantController = async (req, res) => {
   }
 };
 
-
-// export const plantModelController = async (req, res) => {
-//   try {
-//     const plant = await PlantModel.findById(req.params.pid).select("threeDModel");
-//     if (plant.threeDModel && plant.threeDModel.url) { 
-//       return res.status(200).send({ url: plant.threeDModel.url });
-//     }
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).send({
-//       success: false,
-//       message: "Erorr while getting threeDModel",
-//       error,
-//     });
-//   }
-// };
-
-// export const plantModelController = async (req, res) => {
-//   try {
-//       const plant = await PlantModel.findById(req.params.pid);
-//       if (!plant || !plant.model) {
-//           return res.status(404).send({ message: "3D Model Not Found" });
-//       }
-//       res.sendFile(plant.model); // Ensure correct file path
-//   } catch (error) {
-//       res.status(500).send({ message: "Error fetching model" });
-//   }
-// };
-
-// export const plantModelController = async (req, res) => {
-//   try {
-//     const plant = await PlantModel.findById(req.params.pid).select("threeDModel");
-
-//     if (!plant) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "Plant not found",
-//       });
-//     }
-
-//     if (!plant.threeDModel || !plant.threeDModel.url) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "3D model not available for this plant",
-//       });
-//     }
-
-//     return res.status(200).json({
-//       success: true,
-//       url: plant.threeDModel.url,
-//     });
-
-//   } catch (error) {
-//     console.error("Error while fetching 3D model:", error);
-//     res.status(500).json({
-//       success: false,
-//       message: "Error while getting threeDModel",
-//       error: error.message,
-//     });
-//   }
-// };
 
 
 export const plantModelController = async (req, res) => {
@@ -317,24 +312,45 @@ export const plantModelController = async (req, res) => {
   }
 };
 
-
-//delete controller
 // export const deletePlantController = async (req, res) => {
 //   try {
-//     await PlantModel.findByIdAndDelete(req.params.pid).select("-threeDModel");
-//     res.status(200).send({
-//       success: true,
-//       message: "Plant Deleted successfully",
-//     });
+//     // 1. Find the plant in MongoDB
+//     const plant = await PlantModel.findById(req.params.pid);
+//     if (!plant) {
+//       return res.status(404).json({ success: false, message: "Plant not found" });
+//     }
+
+//     // 2. Extract Cloudinary public ID
+//     if (plant.threeDModel?.url) {
+//       const urlParts = plant.threeDModel.url.split('/');
+//       const filenameWithExtension = urlParts.pop(); // Get last part of the URL
+//       const filename = filenameWithExtension.split('.')[0]; // Remove file extension
+//       const folderPath = urlParts.slice(7).join('/'); // Get Cloudinary folder structure
+//       const publicId = `${folderPath}/${filename}`; // Full path
+
+//       console.log("Deleting Cloudinary model:", publicId);
+
+//       // 3. Delete model from Cloudinary
+//       const result = await cloudinary.v2.uploader.destroy(publicId, { resource_type: "raw" });
+
+//       console.log("Cloudinary Deletion Result:", result);
+
+//       if (result.result !== "ok") {
+//         return res.status(500).json({ success: false, message: "Failed to delete model from Cloudinary" });
+//       }
+//     }
+
+//     // 4. Delete the plant from MongoDB
+//     await PlantModel.findByIdAndDelete(req.params.pid);
+
+//     res.status(200).json({ success: true, message: "Plant and associated 3D model deleted successfully" });
+
 //   } catch (error) {
-//     console.log(error);
-//     res.status(500).send({
-//       success: false,
-//       message: "Error while deleting plant",
-//       error,
-//     });
+//     console.error("Error while deleting plant:", error);
+//     res.status(500).json({ success: false, message: "Error while deleting plant", error });
 //   }
 // };
+
 export const deletePlantController = async (req, res) => {
   try {
     // 1. Find the plant in MongoDB
@@ -343,30 +359,38 @@ export const deletePlantController = async (req, res) => {
       return res.status(404).json({ success: false, message: "Plant not found" });
     }
 
-    // 2. Extract Cloudinary public ID
+    // 2. Function to extract Cloudinary public_id from URL
+    const extractPublicId = (url) => {
+      if (!url) return null;
+      const urlParts = url.split("/");
+      const filenameWithExtension = urlParts.pop(); // Last part of the URL
+      const filename = filenameWithExtension.split(".")[0]; // Remove file extension
+      const folderPath = urlParts.slice(7).join("/"); // Extract folder structure
+      return `${folderPath}/${filename}`; // Full Cloudinary public_id
+    };
+
+    // 3. Delete 3D model from Cloudinary
     if (plant.threeDModel?.url) {
-      const urlParts = plant.threeDModel.url.split('/');
-      const filenameWithExtension = urlParts.pop(); // Get last part of the URL
-      const filename = filenameWithExtension.split('.')[0]; // Remove file extension
-      const folderPath = urlParts.slice(7).join('/'); // Get Cloudinary folder structure
-      const publicId = `${folderPath}/${filename}`; // Full path
+      const publicId = extractPublicId(plant.threeDModel.url);
+      console.log("Deleting Cloudinary 3D model:", publicId);
+      await cloudinary.v2.uploader.destroy(publicId, { resource_type: "raw" });
+    }
 
-      console.log("Deleting Cloudinary model:", publicId);
+    // 4. Delete root, leaf, and stem images from Cloudinary
+    const imageFields = ["rootImage", "leafImage", "stemImage","fruitImage"];
 
-      // 3. Delete model from Cloudinary
-      const result = await cloudinary.v2.uploader.destroy(publicId, { resource_type: "raw" });
-
-      console.log("Cloudinary Deletion Result:", result);
-
-      if (result.result !== "ok") {
-        return res.status(500).json({ success: false, message: "Failed to delete model from Cloudinary" });
+    for (const field of imageFields) {
+      if (plant[field]?.url) {
+        const publicId = extractPublicId(plant[field].url);
+        console.log(`Deleting Cloudinary image (${field}):`, publicId);
+        await cloudinary.v2.uploader.destroy(publicId);
       }
     }
 
-    // 4. Delete the plant from MongoDB
+    // 5. Delete the plant from MongoDB
     await PlantModel.findByIdAndDelete(req.params.pid);
 
-    res.status(200).json({ success: true, message: "Plant and associated 3D model deleted successfully" });
+    res.status(200).json({ success: true, message: "Plant and associated images deleted successfully" });
 
   } catch (error) {
     console.error("Error while deleting plant:", error);
@@ -375,135 +399,6 @@ export const deletePlantController = async (req, res) => {
 };
 
 
-
-// export const deletePlantController = async (req, res) => {
-//   try {
-//     // 1. Find the plant in the database
-//     const plant = await PlantModel.findById(req.params.pid);
-//     if (!plant) {
-//       return res.status(404).send({
-//         success: false,
-//         message: "Plant not found",
-//       });
-//     }
-
-//     // 2. Extract Cloudinary public ID from the stored URL
-//     if (plant.threeDModel?.url) {
-//       const publicId = plant.threeDModel.url.split('/').pop().split('.')[0]; // Extract public ID
-
-//       // 3. Delete the model from Cloudinary
-//       await cloudinary.v2.uploader.destroy(publicId, { resource_type: "raw" });
-//     }
-
-//     // 4. Delete the plant from MongoDB
-//     await PlantModel.findByIdAndDelete(req.params.pid);
-
-//     res.status(200).send({
-//       success: true,
-//       message: "Plant and associated 3D model deleted successfully",
-//     });
-
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).send({
-//       success: false,
-//       message: "Error while deleting plant",
-//       error,
-//     });
-//   }
-// };
-
-
-
-//update
-
-// export const updatePlantController = async (req, res) => {
-//   try {
-//     const {
-//       name,
-//       botanicalName,
-//       physicalDescription,
-//       habitat,
-//       medicinalUses,
-//       cultivationMethods,
-//       chemicalComposition,
-//       pharmacologicalEffects,
-//       clinicalStudies,
-//       safetyPrecautions,
-//       sources,
-//       category,
-//     } = req.fields;
-//     const { threeDModel } = req.files;
-
-//     // ✅ Required field validation
-//     if (
-//       !name ||
-//       !botanicalName ||
-//       !physicalDescription ||
-//       !habitat ||
-//       !medicinalUses ||
-//       !cultivationMethods ||
-//       !chemicalComposition ||
-//       !pharmacologicalEffects ||
-//       !clinicalStudies ||
-//       !safetyPrecautions ||
-//       !sources ||
-//       !category
-//     ) {
-//       return res.status(400).send({ error: "All fields are required" });
-//     }
-
-//     // ✅ Check if Category Exists
-//     const categoryExists = await CategoryModel.findById(category);
-//     if (!categoryExists) {
-//       return res.status(400).send({ error: "Invalid Category ID" });
-//     }
-
-//     // ✅ Create New Plant
-//     const plant = await PlantModel.findByIdAndUpdate(req.params.pid,{...req.fields,slug:slugify(name)},{new:true})
-
-//     // ✅ Upload 3D Model to Cloudinary
-//     if (threeDModel) {
-//       const result = await cloudinary.v2.uploader.upload(threeDModel.path, {
-//         resource_type: "raw",
-//         folder: "herbal-garden",
-//         timeout: 60000, // 60 seconds timeout
-//       });
-
-//       // ✅ Store Cloudinary URL
-//       plant.threeDModel = {
-//         url: result.secure_url,
-//         public_id: result.public_id,
-//       };
-
-//       // ✅ Remove temp file after upload
-//       fs.unlinkSync(threeDModel.path);
-//     }
-
-//     // ✅ Save Plant
-//     const savedPlant = await plant.save();
-
-//     // ✅ Add Plant to Category
-//     await CategoryModel.findByIdAndUpdate(
-//       category,
-//       { $addToSet: { plants: savedPlant._id } }, // ✅ Add plant reference
-//       { new: true }
-//     );
-
-//     res.status(201).send({
-//       success: true,
-//       message: "Plant Updated Successfully and added to Category",
-//       plant: savedPlant,
-//     });
-//   } catch (error) {
-//     console.error("Error in updating Plant:", error);
-//     res.status(500).send({
-//       success: false,
-//       error: error.message,
-//       message: "Error in updating Plant",
-//     });
-//   }
-// };
 
 export const updatePlantController = async (req, res) => {
   try {
@@ -708,63 +603,6 @@ export const searchPlantController = async (req, res) => {
 };
 
 
-// export const relatedPlantController = async (req, res) => {
-//   try {
-//     const { pid, cid } = req.params;
-//     const plants = await PlantModel
-//       .find({
-//         category: new mongoose.Types.ObjectId(cid), 
-//         _id: { $ne: new mongoose.Types.ObjectId(pid)},
-//       })
-//       .select("-threeDModel")
-//       .limit(3)
-//       .populate("category");
-//     res.status(200).send({
-//       success: true,
-//       plants,
-//     });
-//   } catch (error) {
-//     console.log(error);
-//     res.status(400).send({
-//       success: false,
-//       message: "error while geting related product",
-//       error,
-//     });
-//   }
-// };
-
-
-// export const relatedPlantController = async (req, res) => {
-//   try {
-//     const { pid, cid } = req.params;
-
-//     console.log("🔍 Fetching related plants for:");
-//     console.log("  🆔 Plant ID:", pid);
-//     console.log("  📂 Category ID:", cid);
-
-//     const plants = await PlantModel.find({
-//       category: new mongoose.Types.ObjectId(cid), // Ensure it's ObjectId
-//       _id: { $ne: new mongoose.Types.ObjectId(pid) }, // Exclude the current plant
-//     })
-//       .select("-threeDModel")
-//       .limit(3)
-//       .populate("category");
-
-//     console.log("✅ Related Plants Found:", plants.length, "plants");
-
-//     res.status(200).send({
-//       success: true,
-//       plants,
-//     });
-//   } catch (error) {
-//     console.log("❌ Error fetching related plants:", error);
-//     res.status(400).send({
-//       success: false,
-//       message: "Error while getting related plants",
-//       error,
-//     });
-//   }
-// };
 
 
 export const relatedPlantController = async (req, res) => {

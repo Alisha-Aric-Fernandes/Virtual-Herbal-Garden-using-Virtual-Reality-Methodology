@@ -8,6 +8,7 @@ import cors from 'cors';
 import CategoryRoute from './routes/CategoryRoute.js'
 import PlantRoute from './routes/PlantRoute.js';
 import NoteRoute from './routes/NoteRoute.js';
+// import { OpenAI } from "openai";
 
 
 //configure env
@@ -37,7 +38,23 @@ app.use('/api/v1/category', CategoryRoute);
 app.use('/api/v1/plant', PlantRoute);
 app.use('/api/v1/notes', NoteRoute);
 
+// const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
+// app.post("/chat", async (req, res) => {
+//     try {
+//         const { message } = req.body;
+
+//         const response = await openai.chat.completions.create({
+//             model: "gpt-4o",
+//             messages: [{ role: "user", content: message }],
+//         });
+
+//         res.json({ reply: response.choices[0].message.content });
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ error: "Something went wrong" });
+//     }
+// });
 
 //rest api
 app.get("/", (req, res) => {

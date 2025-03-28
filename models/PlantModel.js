@@ -59,6 +59,23 @@ const plantSchema = new mongoose.Schema(
          ref: "Category", 
          required: true
     },
+    rootImage: {
+      url: { type: String, required: false },
+      public_id: { type: String, required: false },
+    },
+    leafImage: {
+      url: { type: String, required: false },
+      public_id: { type: String, required: false },
+    },
+    stemImage: {
+      url: { type: String, required: false },
+      public_id: { type: String, required: false },
+    },
+    fruitImage: {
+      url: { type: String, required: false },
+      public_id: { type: String, required: false },
+    },
+    
     
   },
   { timestamps: true }
