@@ -16,6 +16,7 @@
   "description": "",
   "dependencies": {
     "@google/model-viewer": "^4.0.0",
+    "aframe-extras": "^7.5.4",
     "bcrypt": "^5.1.1",
     "cloudinary": "^2.5.1",
     "colors": "^1.4.0",
