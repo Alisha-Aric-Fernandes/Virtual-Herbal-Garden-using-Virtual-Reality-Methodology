@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Layout from "../components/Layout/Layout";
 import { useParams, useNavigate } from "react-router-dom";
-// import "../styles/CategoryPlantStyles.css";
+
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from '../context/auth';
@@ -68,20 +68,7 @@ const CategoryPlant = () => {
                                                             More Details
                                                           </button>
                                                           
-                                                            {/* <button
-                                                      className="btn btn-dark ms-1"
-                                                      onClick={(e) => {
-                                                        e.stopPropagation(); // Stops the click event from bubbling to the Link
-                                                        e.preventDefault(); 
-                                                        setBookmark([...bookmark, p]);
-                                                        localStorage.setItem(
-                                                          "bookmark",
-                                                          JSON.stringify([...bookmark, p])
-                                                        );
-                                                        toast.success("Plant is Bookmarked");
-                                                      }}
-                                                    >BOOKMARK
-                                                    </button>                                */}
+                                                            
 
                                                     <button
                                                                                 className="btn btn-dark ms-1"

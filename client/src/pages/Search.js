@@ -2,7 +2,7 @@
 import React from "react";
 import Layout from "./../components/Layout/Layout";
 import { useSearch } from "../context/search";
-// import { Link } from "react-router-dom";
+
 import {useNavigate} from "react-router-dom";
 import { useBookmark } from "../context/bookmark";
 import toast from "react-hot-toast";
@@ -23,9 +23,7 @@ const Search = () => {
           <div className="row row-cols-1 row-cols-md-3 g-4">
                           {values?.results.map((p) => (
                             <div key={p._id} className="col d-flex justify-content-center mb-4">
-                              {/* <Link
-                                to={`/dashboard/admin/plant/${p.slug}`}
-                                className="plant-link" */}
+                              
                               
                                 <div className="card" style={{  width: "100%", maxWidth: "18rem", margin: "auto"}}>
                                   {p.threeDModel?.url ? (
@@ -50,12 +48,7 @@ const Search = () => {
                                     <p className="card-text">
                                       {p.physicalDescription || "No description available"}
                                     </p>
-                                    {/* <button className="btn btn-primary ms-1">
-                                      More Details
-                                    </button>
-                                    <button className="btn btn-secondary ms-1">
-                                      Bookmark
-                                    </button> */}
+                                    
                                     <button className="btn btn-primary ms-1" onClick={()=>navigate(`/plant/${p.slug}`)}> 
                                                                 More Details
                                                               </button>

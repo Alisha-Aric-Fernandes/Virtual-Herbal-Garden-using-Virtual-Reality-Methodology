@@ -7,7 +7,7 @@ import { AiOutlineReload } from "react-icons/ai";
 import {useNavigate} from "react-router-dom";
 import { useBookmark } from "../context/bookmark";
 import toast from "react-hot-toast";
-// import "../styles/HomePage.css";
+
 import { useAuth } from '../context/auth';
 const HomePage = () => {
   const navigate =useNavigate();
