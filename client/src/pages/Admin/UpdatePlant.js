@@ -88,12 +88,7 @@ const UpdatePlant = () => {
     getAllCategory();
   }, []);
 
-  // const handleImageChange = (event, setImage) => {
-  //   const file = event.target.files[0];
-  //   if (file) {
-  //     setImage(file);
-  //   }
-  // };
+  
   const handleImageChange = (event, setImage) => {
     const file = event.target.files[0];
     if (file) {
@@ -151,15 +146,7 @@ const UpdatePlant = () => {
         productData
       );
 
-      // if (data?.success) {
-      //   toast.success(data?.message);
-      //   getSinglePlant();
-      //   navigate('/dashboard/admin/plants');
-        
-      // } else {
-      //   toast.success("Plant Updated Successfully");
-        
-      // }
+      
 
     if (data?.success) {
       toast.success(data?.message || "Plant Updated Successfully");
@@ -173,24 +160,7 @@ const UpdatePlant = () => {
     }
   };
 
-  // Handle file upload and create a preview URL
-  // const handleFileChange = (event) => {
-  //   const file = event.target.files[0];
-  //   if (!file) return;
-
-  //   // Check if the file is a supported 3D model format
-  //   const allowedExtensions = [".glb", ".gltf"];
-  //   const fileExtension = file.name.slice(file.name.lastIndexOf(".")).toLowerCase();
-
-  //   if (!allowedExtensions.includes(fileExtension)) {
-  //     toast.error("Invalid file type. Please upload a .glb or .gltf file.");
-  //     return;
-  //   }
-
-  //   const fileUrl = URL.createObjectURL(file);
-  //   setThreeDModel(file);
-  //   setModelUrl(fileUrl); // Store Blob URL for preview
-  // };
+  
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];

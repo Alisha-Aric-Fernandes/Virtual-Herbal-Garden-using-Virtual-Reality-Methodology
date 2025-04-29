@@ -53,24 +53,7 @@ const handleSubmit=async(e)=>{
     <input type="Email"  value={email} onChange={(e)=>setemail( e.target.value)} className="form-control" id="exampleInputEmail"  placeholder='enter your email' required/>
     
   </div>
-  {/* <div className="mb-3" style={{ display: "flex", alignItems: "center", padding: "5px" }}>
-            <input
-              type={showPassword ? "text" : "password"}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="form-control"
-              placeholder="Enter your password"
-              style={{ flex: 1, border: "none", outline: "none" }}
-              required
-            />
-            <span
-              onClick={() => setShowPassword(!showPassword)}
-              style={{ cursor: "pointer", padding: "5px" }}
-            >
-              {showPassword ? <FaEyeSlash /> : <FaEye />}
-            </span>
-          </div> 
- */}
+ 
 
 
 <div className="mb-3" style={{ position: "relative" }}>

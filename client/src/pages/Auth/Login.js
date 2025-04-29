@@ -53,10 +53,6 @@ const Login = () => {
     <input type="Email"  value={email} onChange={(e)=>setemail( e.target.value)} className="form-control" id="exampleInputEmail"  placeholder='enter your email' required/>
     
   </div>
-  {/* <div className="mb-3">
-    
-    <input type="password"  value={password} onChange={(e)=>setpassword( e.target.value)}  className="form-control" id="exampleInputPassword1"  placeholder='enter your password' required/>
-  </div> */}
 
   
   <div className="mb-3" style={{ position: "relative" }}>
