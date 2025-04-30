@@ -1,6 +1,6 @@
 {
   "name": "vhg",
-  "proxy": "http://localhost:8080",
+ 
   "version": "1.0.0",
   "main": "server.js",
   "type": "module",
