@@ -1,5 +1,5 @@
 
-
+import Layout from "../components/Layout/Layout";
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { FaWhatsapp, FaEnvelope, FaInstagram, FaTwitter } from "react-icons/fa";
@@ -47,7 +47,7 @@ const Notes = () => {
         return;
       }
 
-      const response = await axios.get(`${process.env.REACT_APP_API}/api/v1/notes`, {
+      const response = await axios.get("/api/v1/notes", {
         headers: { Authorization: token },
       });
 
@@ -70,13 +70,13 @@ const Notes = () => {
 
       if (editId) {
         response = await axios.put(
-          `${process.env.REACT_APP_API}/api/v1/notes/${editId}`,
+          `/api/v1/notes/${editId}`,
           noteData,
           { headers: { Authorization: token } }
         );
       } else {
         response = await axios.post(
-          `${process.env.REACT_APP_API}/api/v1/notes`,
+          "/api/v1/notes",
           noteData,
           { headers: { Authorization: token } }
         );
@@ -99,7 +99,7 @@ const Notes = () => {
         return;
       }
 
-      await axios.delete(`${process.env.REACT_APP_API}/api/v1/notes/${id}`, {
+      await axios.delete(`/api/v1/notes/${id}`, {
         headers: { Authorization: token },
       });
 
@@ -132,6 +132,7 @@ const Notes = () => {
   };
 
   return (
+  <Layout title={"Notes"}>
     <div className="notes-container">
       <h1>Notes</h1>
       <input
@@ -185,6 +186,7 @@ const Notes = () => {
         ))}
       </ul>
     </div>
+     </Layout>
   );
 };
 

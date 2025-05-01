@@ -37,7 +37,7 @@ const UpdatePlant = () => {
   const getSinglePlant = async () => {
     try {
       const { data } = await axios.get(
-        `${process.env.REACT_APP_API}/api/v1/plant/get-plant/${params.slug}`
+        `/api/v1/plant/get-plant/${params.slug}`
       );
       setName(data.plant.name);
       setId(data.plant._id);
@@ -74,7 +74,7 @@ const UpdatePlant = () => {
   // Fetch all categories
   const getAllCategory = async () => {
     try {
-      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/category/get-category`);
+      const { data } = await axios.get("/api/v1/category/get-category");
       if (data?.success) {
         setCategories(data?.category);
       }
@@ -142,7 +142,7 @@ const UpdatePlant = () => {
 
 
       const { data } = await axios.put(
-        `${process.env.REACT_APP_API}/api/v1/plant/update-plant/${id}`,
+        `/api/v1/plant/update-plant/${id}`,
         productData
       );
 
@@ -194,7 +194,7 @@ const UpdatePlant = () => {
       let answer = window.prompt("Are You Sure want to delete this product ? ");
       if (!answer) return;
       const { data } = await axios.delete(
-        `${process.env.REACT_APP_API}/api/v1/plant/delete-plant/${id}`
+        `/api/v1/plant/delete-plant/${id}`
       );
       toast.success("Plant Deleted Successfully");
       navigate("/dashboard/admin/plants");

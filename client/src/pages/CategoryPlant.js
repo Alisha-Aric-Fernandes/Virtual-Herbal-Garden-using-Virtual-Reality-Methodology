@@ -20,7 +20,7 @@ const CategoryPlant = () => {
   const getPlantsByCat = async () => {
     try {
       const { data } = await axios.get(
-        `${process.env.REACT_APP_API}/api/v1/plant/plant-category/${params.slug}`
+        `/api/v1/plant/plant-category/${params.slug}`
       );
       setPlants(data?.plants);
       setCategory(data?.category);
@@ -30,7 +30,7 @@ const CategoryPlant = () => {
   };
 
   return (
-    <Layout>
+    <Layout title={"Category"}>
        <div className="container mt-3 category">
         <h4 className="text-center">Category - {category?.name}</h4>
         <h6 className="text-center">{plants?.length} result found </h6>

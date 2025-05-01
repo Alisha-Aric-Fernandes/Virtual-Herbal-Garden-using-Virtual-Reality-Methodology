@@ -9,6 +9,10 @@ const VRTour = () => {
   const [selectedPlant, setSelectedPlant] = useState(null);
   const [infoPosition, setInfoPosition] = useState("0 2 -2");
   const [showWelcome, setShowWelcome] = useState(true);
+  useEffect(() => {
+  document.title = "VRTour";
+}, []);
+
 
   useEffect(() => {
     fetchPlants();
@@ -83,7 +87,7 @@ const VRTour = () => {
 
   const fetchPlants = async () => {
     try {
-      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/plant/get-plant`);
+      const { data } = await axios.get("/api/v1/plant/get-plant");
       setPlants(data?.plants || []);
     } catch (error) {
       console.error("Error fetching plants:", error);
@@ -168,7 +172,7 @@ const VRTour = () => {
         
       }
     };
-  
+    speechSynthesis.cancel();
     speechSynthesis.speak(utterance);
   };
   
@@ -176,7 +180,7 @@ const VRTour = () => {
   
   useEffect(() => {
     if (!showWelcome) {
-      speak("Click on any plant to hear and see its details. Click on exit button to return to the home page.");
+      speak("Click on any plant to hear and see its details. Click on exit button to return to the home page. Use W A S D keys for navigation");
   
       const tryPlaySound = () => {
         const musicEntity = document.querySelector("#bgMusic");
@@ -314,29 +318,26 @@ if (scene?.hasLoaded) {
 
 
       
+<a-entity id="rig" movement-controls>
+  <a-camera position="0 1.6 5" raycaster="objects: .clickable">
+    
+   
+    <a-entity position="0 -0.8 -1.1"> 
+      <a-plane
+        id="exitButton"
+        width="0.2"
+        height="0.1"
+        color="red"
+        class="clickable"
+        material="opacity: 0.9; transparent: true"
+      >
+        <a-text value="Exit" color="white" align="center" position="0 0.03 0.03"  scale="0.3 0.3 0.3"></a-text>
+      </a-plane>
+    </a-entity>
 
-      {/* Movement Rig */}
-      <a-entity id="rig" movement-controls>
-        <a-camera position="0 1.6 5" raycaster="objects: .clickable">
-          {/* Exit Button */}
-          <a-entity position="0 0 -1.5">
-          <a-plane
-  id="exitButton"
-  position="5.3 2.3 -1.5"
-  width="0.5"
-  height="0.3"
-  color="red"
-  class="clickable"
-  material="opacity: 0.9; transparent: true"
->
-  <a-text value="Exit" color="white" position="-0.22 0.02 0.01" scale="1 1 1"></a-text>
-</a-plane>
+  </a-camera>
+</a-entity>
 
-
-
-          </a-entity>
-        </a-camera>
-      </a-entity>
 
       {/* Render Plants */}
       {plants.map((plant, index) => {

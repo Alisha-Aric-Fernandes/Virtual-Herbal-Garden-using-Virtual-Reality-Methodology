@@ -24,7 +24,7 @@ const PlantDetails = () => {
   const getPlant = async () => {
     try {
       const { data } = await axios.get(
-        `${process.env.REACT_APP_API}/api/v1/plant/get-plant/${params.slug}`
+        `/api/v1/plant/get-plant/${params.slug}`
       );
       setPlant(data?.plant);
       getSimilarPlant(data?.plant._id, data?.plant.category._id);
@@ -36,7 +36,7 @@ const PlantDetails = () => {
   const getSimilarPlant = async (pid, cid) => {
     try {
       const { data } = await axios.get(
-        `${process.env.REACT_APP_API}/api/v1/plant/related-plant/${pid}/${cid}`
+        `/api/v1/plant/related-plant/${pid}/${cid}`
       );
       setRelatedPlants(data?.plants || []);
     } catch (error) {

@@ -19,7 +19,7 @@ const Plants = () => {
 
   const getAllPlants = async () => {
     try {
-      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/plant/get-plant`);
+      const { data } = await axios.get("/api/v1/plant/get-plant");
       
       console.log("API Response:", data);
 

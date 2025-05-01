@@ -119,7 +119,7 @@ const HomePage = () => {
   };
 
   return (
-    <Layout title={"All plants"}>
+    <Layout title={"Home Page"}>
       {/* banner image */}
       <img
         src="/images/banner1.jpg"

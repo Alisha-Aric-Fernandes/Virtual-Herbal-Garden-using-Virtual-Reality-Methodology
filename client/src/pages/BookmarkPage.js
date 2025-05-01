@@ -44,7 +44,7 @@ const BookmarkPage = () => {
   };
 
   return (
-    <Layout>
+    <Layout title={"Bookmark"}>
       <div className="container">
         <div className="row justify-content-center">
           <div className="col-md-10 text-center">

@@ -39,7 +39,7 @@ const CreatePlant = () => {
   const getAllCategory = async () => {
     try {
       const { data } = await axios.get(
-        `${process.env.REACT_APP_API}/api/v1/category/get-category`
+        "/api/v1/category/get-category"
       );
       if (data?.success) {
         setCategories(data?.category);
@@ -99,7 +99,7 @@ const CreatePlant = () => {
       plantData.append("stemImage", stemImage);
       plantData.append("fruitImage", fruitImage);
       const { data } = await axios.post(
-        `${process.env.REACT_APP_API}/api/v1/plant/create-plant`,
+        "/api/v1/plant/create-plant",
         plantData
       );
 

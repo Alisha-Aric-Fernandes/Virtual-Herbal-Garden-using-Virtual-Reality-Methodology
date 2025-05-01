@@ -3,6 +3,7 @@ import React from "react";
 
 const NoteList = ({ notes, onEditNote, onDeleteNote }) => {
     return (
+        <Layout title={"Notes"}>
         <ul>
             {notes.map((note) => (
                 <li key={note._id}>
@@ -12,7 +13,7 @@ const NoteList = ({ notes, onEditNote, onDeleteNote }) => {
                     <button onClick={() => onDeleteNote(note._id)}>Delete</button>
                 </li>
             ))}
-        </ul>
+        </ul></Layout>
     );
 };
 
