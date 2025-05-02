@@ -44,9 +44,27 @@ const VRTour = () => {
   useEffect(() => {
     const exitButton = document.querySelector("#exitButton");
     if (exitButton) {
-      const handleExit = () => {
-        window.location.href = "/";
-      };
+     const handleExit = () => {
+  // Stop ongoing narration
+  speechSynthesis.cancel();
+
+  // Pause background HTML audio
+  const bgAudio = document.querySelector("#bgAudio");
+  if (bgAudio) {
+    bgAudio.pause();
+    bgAudio.currentTime = 0;
+  }
+
+  // Stop A-Frame background sound
+  const bgMusic = document.querySelector("#bgMusic");
+  if (bgMusic?.components?.sound) {
+    bgMusic.components.sound.stopSound();
+  }
+
+  // Navigate to home after stopping everything
+  window.location.href = "/";
+};
+
       exitButton.addEventListener("click", handleExit);
   
       // Cleanup
