@@ -1,6 +1,6 @@
  Virtual Herbal Garden 
 
-An immersive, interactive web application and VR experience that brings the world of medicinal plants to life. Designed for educational and awareness purposes, the Virtual Herbal Garden blends traditional knowledge with modern technology. This project is funded by **KCSTC** with a grant of ₹45,000.
+An immersive, interactive web application and VR experience that brings the world of medicinal plants to life. Designed for educational and awareness purposes, the Virtual Herbal Garden blends traditional knowledge with modern technology. This project is funded by **KCSTC** 
 
  🚀 Features
 
